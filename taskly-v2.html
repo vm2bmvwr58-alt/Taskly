@@ -1,0 +1,2235 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Taskly — Werk slimmer, niet harder</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --blue-dark: #0A2463;
+    --blue-mid: #1E5FBD;
+    --blue-light: #3A86FF;
+    --blue-pale: #E8F0FE;
+    --blue-ultra: #F0F5FF;
+    --gold: #F0A500;
+    --white: #FFFFFF;
+    --text: #1A1A2E;
+    --muted: #6B7280;
+    --light: #F8FAFF;
+    --border: #DDE8FF;
+    --shadow: 0 4px 24px rgba(10,36,99,0.10);
+    --shadow-lg: 0 12px 48px rgba(10,36,99,0.15);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Manrope', sans-serif;
+    background: var(--white);
+    color: var(--text);
+    font-size: 16px;
+    line-height: 1.7;
+  }
+
+  /* ===== NAV ===== */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 999;
+    background: rgba(255,255,255,0.97);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 68px;
+    box-shadow: 0 2px 16px rgba(10,36,99,0.06);
+  }
+
+  .logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: var(--blue-dark);
+    letter-spacing: -0.02em;
+    cursor: pointer;
+  }
+
+  .logo span { color: var(--blue-light); }
+
+  .nav-tabs {
+    display: flex;
+    gap: 0.3rem;
+    list-style: none;
+  }
+
+  .nav-tabs li a, .nav-tabs li button {
+    display: block;
+    padding: 0.55rem 1.1rem;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--muted);
+    text-decoration: none;
+    border-radius: 8px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'Manrope', sans-serif;
+  }
+
+  .nav-tabs li button:hover,
+  .nav-tabs li button.active {
+    background: var(--blue-pale);
+    color: var(--blue-dark);
+  }
+
+  .nav-tabs li button.active {
+    color: var(--blue-mid);
+    font-weight: 700;
+  }
+
+  .nav-cta-btn {
+    background: var(--blue-dark) !important;
+    color: var(--white) !important;
+    padding: 0.6rem 1.4rem !important;
+    border-radius: 10px !important;
+  }
+
+  .nav-cta-btn:hover {
+    background: var(--blue-mid) !important;
+    transform: translateY(-1px);
+  }
+
+  /* ===== PAGES ===== */
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* ===== HERO ===== */
+  .hero {
+    background: linear-gradient(150deg, var(--blue-dark) 0%, var(--blue-mid) 55%, #1a7aff 100%);
+    color: white;
+    padding: 7rem 2.5rem 5rem;
+    position: relative;
+    overflow: hidden;
+    min-height: 92vh;
+    display: flex;
+    align-items: center;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    width: 700px; height: 700px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.04);
+    top: -200px; right: -200px;
+  }
+
+  .hero::after {
+    content: '';
+    position: absolute;
+    width: 400px; height: 400px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.04);
+    bottom: -100px; left: -100px;
+  }
+
+  .hero-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: center;
+    position: relative;
+    z-index: 1;
+    width: 100%;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.2);
+    padding: 0.4rem 1rem;
+    border-radius: 100px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-bottom: 1.8rem;
+    color: rgba(255,255,255,0.9);
+  }
+
+  .hero-badge-dot {
+    width: 7px; height: 7px;
+    background: #4ADE80;
+    border-radius: 50%;
+    animation: blink 2s infinite;
+  }
+
+  @keyframes blink {
+    0%,100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.8rem, 5vw, 4.2rem);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin-bottom: 1.5rem;
+  }
+
+  .hero h1 em {
+    font-style: normal;
+    color: #93C5FD;
+  }
+
+  .hero-desc {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: rgba(255,255,255,0.8);
+    margin-bottom: 2.5rem;
+    font-weight: 400;
+  }
+
+  .hero-btns {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 3rem;
+  }
+
+  .btn-white {
+    background: white;
+    color: var(--blue-dark);
+    padding: 0.85rem 2rem;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+    font-family: 'Manrope', sans-serif;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  }
+
+  .btn-white:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+  }
+
+  .btn-outline-white {
+    background: transparent;
+    color: white;
+    padding: 0.85rem 2rem;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    text-decoration: none;
+    cursor: pointer;
+    border: 2px solid rgba(255,255,255,0.35);
+    font-family: 'Manrope', sans-serif;
+    transition: all 0.2s;
+  }
+
+  .btn-outline-white:hover {
+    background: rgba(255,255,255,0.1);
+    border-color: rgba(255,255,255,0.6);
+  }
+
+  .hero-stats {
+    display: flex;
+    gap: 2.5rem;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(255,255,255,0.15);
+  }
+
+  .hero-stat-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: white;
+  }
+
+  .hero-stat-label {
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.6);
+    margin-top: 0.1rem;
+  }
+
+  .hero-visual {
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 24px;
+    padding: 2rem;
+    backdrop-filter: blur(10px);
+  }
+
+  .hero-visual-header {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+
+  .app-dot { width: 10px; height: 10px; border-radius: 50%; }
+
+  .mock-task {
+    background: rgba(255,255,255,0.08);
+    border-radius: 10px;
+    padding: 1rem 1.2rem;
+    margin-bottom: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-size: 0.88rem;
+    color: rgba(255,255,255,0.85);
+  }
+
+  .mock-check {
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    flex-shrink: 0;
+  }
+
+  .done { background: #4ADE80; color: white; }
+  .pending { background: rgba(255,255,255,0.15); }
+  .ai-badge-small {
+    margin-left: auto;
+    background: rgba(58,134,255,0.4);
+    font-size: 0.7rem;
+    padding: 0.2rem 0.6rem;
+    border-radius: 100px;
+    color: #93C5FD;
+    font-weight: 600;
+  }
+
+  /* ===== SECTION BASE ===== */
+  .section {
+    padding: 6rem 2.5rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .section-full {
+    padding: 6rem 2.5rem;
+    background: var(--light);
+  }
+
+  .section-full .inner {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .section-label {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--blue-mid);
+    background: var(--blue-pale);
+    padding: 0.35rem 0.9rem;
+    border-radius: 100px;
+    margin-bottom: 1.2rem;
+  }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 800;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    color: var(--blue-dark);
+    margin-bottom: 1.2rem;
+  }
+
+  .section-body {
+    font-size: 1.05rem;
+    color: var(--muted);
+    line-height: 1.8;
+    max-width: 680px;
+    margin-bottom: 0.8rem;
+  }
+
+  /* ===== HOME PAGE ===== */
+
+  /* Why us */
+  .why-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: center;
+    margin-top: 3rem;
+  }
+
+  .why-text h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: var(--blue-dark);
+    margin-bottom: 1rem;
+  }
+
+  .why-text p {
+    color: var(--muted);
+    font-size: 1rem;
+    line-height: 1.85;
+    margin-bottom: 1rem;
+  }
+
+  .why-points {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+
+  .why-point {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+
+  .why-point-icon {
+    width: 40px; height: 40px;
+    background: var(--blue-pale);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+  }
+
+  .why-point-text h4 {
+    font-weight: 700;
+    color: var(--blue-dark);
+    font-size: 0.95rem;
+    margin-bottom: 0.2rem;
+  }
+
+  .why-point-text p {
+    font-size: 0.88rem;
+    color: var(--muted);
+    margin: 0;
+    line-height: 1.6;
+  }
+
+  .why-visual {
+    background: linear-gradient(135deg, var(--blue-pale), #dce8ff);
+    border-radius: 24px;
+    padding: 2.5rem;
+    border: 1px solid var(--border);
+  }
+
+  /* Ticker */
+  .ticker-section {
+    background: var(--blue-dark);
+    padding: 1rem 0;
+    overflow: hidden;
+  }
+
+  .ticker {
+    display: flex;
+    width: max-content;
+    animation: ticker 25s linear infinite;
+  }
+
+  .ticker-item {
+    padding: 0 2.5rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: rgba(255,255,255,0.6);
+    white-space: nowrap;
+  }
+
+  .ticker-item span { color: #93C5FD; margin-right: 2rem; }
+
+  @keyframes ticker {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  /* Feature preview cards */
+  .preview-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    margin-top: 3.5rem;
+  }
+
+  .preview-card {
+    background: var(--white);
+    border: 1.5px solid var(--border);
+    border-radius: 20px;
+    padding: 2.2rem;
+    transition: all 0.3s;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .preview-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--blue-mid), var(--blue-light));
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .preview-card:hover {
+    border-color: var(--blue-light);
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-4px);
+  }
+
+  .preview-card:hover::before { opacity: 1; }
+
+  .preview-icon {
+    width: 52px; height: 52px;
+    background: var(--blue-pale);
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    margin-bottom: 1.2rem;
+  }
+
+  .preview-card h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: var(--blue-dark);
+    margin-bottom: 0.7rem;
+  }
+
+  .preview-card p {
+    font-size: 0.9rem;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+
+  /* Testimonials */
+  .testimonials-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    margin-top: 3.5rem;
+  }
+
+  .testimonial-card {
+    background: white;
+    border: 1.5px solid var(--border);
+    border-radius: 20px;
+    padding: 2rem;
+    transition: box-shadow 0.3s;
+  }
+
+  .testimonial-card:hover { box-shadow: var(--shadow); }
+
+  .stars { color: #F59E0B; font-size: 1rem; margin-bottom: 1rem; }
+
+  .testimonial-text {
+    font-size: 0.95rem;
+    line-height: 1.8;
+    color: var(--text);
+    margin-bottom: 1.5rem;
+    font-style: italic;
+  }
+
+  .testimonial-author {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+  }
+
+  .avatar {
+    width: 42px; height: 42px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 0.9rem;
+    color: white;
+    flex-shrink: 0;
+  }
+
+  .author-name { font-weight: 700; font-size: 0.9rem; color: var(--blue-dark); }
+  .author-role { font-size: 0.8rem; color: var(--muted); }
+
+  /* CTA Banner */
+  .cta-banner {
+    background: linear-gradient(135deg, var(--blue-dark), var(--blue-mid));
+    color: white;
+    border-radius: 28px;
+    padding: 4rem 3.5rem;
+    text-align: center;
+    margin: 4rem auto;
+    max-width: 1200px;
+    margin-left: 2.5rem;
+    margin-right: 2.5rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cta-banner::before {
+    content: '';
+    position: absolute;
+    width: 400px; height: 400px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 50%;
+    top: -150px; right: -100px;
+  }
+
+  .cta-banner h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 800;
+    margin-bottom: 1rem;
+    position: relative;
+  }
+
+  .cta-banner p {
+    color: rgba(255,255,255,0.8);
+    font-size: 1.05rem;
+    max-width: 560px;
+    margin: 0 auto 2rem;
+    line-height: 1.8;
+    position: relative;
+  }
+
+  /* ===== FEATURES PAGE ===== */
+  .features-intro {
+    background: linear-gradient(135deg, var(--blue-dark), var(--blue-mid));
+    color: white;
+    padding: 5rem 2.5rem;
+    text-align: center;
+  }
+
+  .features-intro h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.5rem, 5vw, 3.8rem);
+    font-weight: 800;
+    margin-bottom: 1.2rem;
+  }
+
+  .features-intro p {
+    font-size: 1.1rem;
+    color: rgba(255,255,255,0.8);
+    max-width: 620px;
+    margin: 0 auto;
+    line-height: 1.8;
+  }
+
+  .feature-block {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: center;
+    padding: 5rem 2.5rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .feature-block.reverse { direction: rtl; }
+  .feature-block.reverse > * { direction: ltr; }
+
+  .feature-block-text h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: var(--blue-dark);
+    margin-bottom: 1rem;
+  }
+
+  .feature-block-text p {
+    font-size: 1rem;
+    color: var(--muted);
+    line-height: 1.85;
+    margin-bottom: 1rem;
+  }
+
+  .feature-list {
+    list-style: none;
+    margin-top: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+  }
+
+  .feature-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.7rem;
+    font-size: 0.95rem;
+    color: var(--text);
+    line-height: 1.5;
+  }
+
+  .feature-list li::before {
+    content: '✓';
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px; height: 20px;
+    background: var(--blue-mid);
+    color: white;
+    border-radius: 50%;
+    font-size: 0.65rem;
+    font-weight: 800;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .feature-visual {
+    background: linear-gradient(135deg, var(--blue-pale), #dce8ff);
+    border-radius: 24px;
+    padding: 2.5rem;
+    border: 1.5px solid var(--border);
+    min-height: 280px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    justify-content: center;
+  }
+
+  .visual-row {
+    background: white;
+    border-radius: 12px;
+    padding: 1rem 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    box-shadow: 0 2px 8px rgba(10,36,99,0.06);
+    font-size: 0.88rem;
+    color: var(--text);
+  }
+
+  .visual-icon {
+    width: 34px; height: 34px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    flex-shrink: 0;
+  }
+
+  .vi-blue { background: var(--blue-pale); }
+  .vi-green { background: #DCFCE7; }
+  .vi-yellow { background: #FEF9C3; }
+
+  .visual-label {
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: var(--blue-dark);
+  }
+
+  .visual-sub {
+    font-size: 0.78rem;
+    color: var(--muted);
+  }
+
+  .visual-tag {
+    margin-left: auto;
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 0.2rem 0.6rem;
+    border-radius: 100px;
+  }
+
+  .tag-blue { background: var(--blue-pale); color: var(--blue-mid); }
+  .tag-green { background: #DCFCE7; color: #16A34A; }
+
+  .feature-divider {
+    background: var(--light);
+    padding: 0.5rem 0;
+  }
+
+  /* ===== PRICING PAGE ===== */
+  .pricing-intro {
+    background: linear-gradient(135deg, var(--blue-dark), var(--blue-mid));
+    color: white;
+    padding: 5rem 2.5rem;
+    text-align: center;
+  }
+
+  .pricing-intro h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.5rem, 5vw, 3.8rem);
+    font-weight: 800;
+    margin-bottom: 1.2rem;
+  }
+
+  .pricing-intro p {
+    font-size: 1.1rem;
+    color: rgba(255,255,255,0.8);
+    max-width: 560px;
+    margin: 0 auto;
+    line-height: 1.8;
+  }
+
+  .pricing-section {
+    padding: 5rem 2.5rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    margin-top: 3rem;
+    align-items: start;
+  }
+
+  .price-card {
+    background: white;
+    border: 2px solid var(--border);
+    border-radius: 24px;
+    padding: 2.5rem 2rem;
+    transition: all 0.3s;
+    position: relative;
+  }
+
+  .price-card:hover {
+    border-color: var(--blue-light);
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-4px);
+  }
+
+  .price-card.featured {
+    border-color: var(--blue-mid);
+    background: linear-gradient(160deg, var(--blue-pale) 0%, white 60%);
+    box-shadow: var(--shadow-lg);
+    transform: scale(1.03);
+  }
+
+  .price-card.featured:hover { transform: scale(1.03) translateY(-4px); }
+
+  .popular-tag {
+    position: absolute;
+    top: -14px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--blue-mid);
+    color: white;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.35rem 1rem;
+    border-radius: 100px;
+    white-space: nowrap;
+  }
+
+  .plan-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--blue-dark);
+    margin-bottom: 0.4rem;
+  }
+
+  .plan-tagline {
+    font-size: 0.88rem;
+    color: var(--muted);
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+  }
+
+  .plan-price {
+    font-family: 'Playfair Display', serif;
+    font-size: 3rem;
+    font-weight: 800;
+    color: var(--blue-dark);
+    line-height: 1;
+    margin-bottom: 0.3rem;
+  }
+
+  .plan-price span {
+    font-family: 'Manrope', sans-serif;
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--muted);
+  }
+
+  .plan-note {
+    font-size: 0.8rem;
+    color: var(--muted);
+    margin-bottom: 2rem;
+  }
+
+  .plan-features {
+    list-style: none;
+    margin-bottom: 2.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .plan-features li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.7rem;
+    font-size: 0.88rem;
+    color: var(--text);
+    padding: 0.65rem 0;
+    border-bottom: 1px solid var(--border);
+    line-height: 1.5;
+  }
+
+  .plan-features li:last-child { border-bottom: none; }
+
+  .check-icon {
+    color: var(--blue-mid);
+    font-weight: 800;
+    font-size: 1rem;
+    flex-shrink: 0;
+  }
+
+  .btn-primary {
+    display: block;
+    width: 100%;
+    text-align: center;
+    background: var(--blue-dark);
+    color: white;
+    padding: 0.9rem 1.5rem;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    font-family: 'Manrope', sans-serif;
+    transition: all 0.2s;
+  }
+
+  .btn-primary:hover {
+    background: var(--blue-mid);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(10,36,99,0.2);
+  }
+
+  .btn-outline {
+    display: block;
+    width: 100%;
+    text-align: center;
+    background: transparent;
+    color: var(--blue-dark);
+    padding: 0.9rem 1.5rem;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    text-decoration: none;
+    border: 2px solid var(--blue-dark);
+    cursor: pointer;
+    font-family: 'Manrope', sans-serif;
+    transition: all 0.2s;
+  }
+
+  .btn-outline:hover {
+    background: var(--blue-pale);
+  }
+
+  /* Comparison table */
+  .compare-section {
+    background: var(--light);
+    padding: 5rem 2.5rem;
+  }
+
+  .compare-inner { max-width: 1200px; margin: 0 auto; }
+
+  .compare-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 2.5rem;
+    background: white;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+  }
+
+  .compare-table th {
+    background: var(--blue-dark);
+    color: white;
+    padding: 1.2rem 1.5rem;
+    text-align: center;
+    font-size: 0.9rem;
+    font-weight: 700;
+  }
+
+  .compare-table th:first-child { text-align: left; }
+
+  .compare-table td {
+    padding: 1rem 1.5rem;
+    font-size: 0.88rem;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+  }
+
+  .compare-table td:first-child {
+    text-align: left;
+    font-weight: 600;
+    color: var(--blue-dark);
+  }
+
+  .compare-table tr:last-child td { border-bottom: none; }
+  .compare-table tr:nth-child(even) td { background: var(--light); }
+
+  .t-yes { color: #16A34A; font-weight: 700; font-size: 1.1rem; }
+  .t-no { color: #D1D5DB; font-size: 1.1rem; }
+
+  /* FAQ */
+  .faq-section { padding: 5rem 2.5rem; max-width: 800px; margin: 0 auto; }
+
+  .faq-item {
+    border-bottom: 1px solid var(--border);
+    padding: 1.5rem 0;
+  }
+
+  .faq-q {
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--blue-dark);
+    margin-bottom: 0.7rem;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .faq-a {
+    font-size: 0.95rem;
+    color: var(--muted);
+    line-height: 1.8;
+  }
+
+  /* ===== ABOUT PAGE ===== */
+  .about-intro {
+    background: linear-gradient(135deg, var(--blue-dark), var(--blue-mid));
+    color: white;
+    padding: 6rem 2.5rem;
+    text-align: center;
+  }
+
+  .about-intro h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.5rem, 5vw, 3.8rem);
+    font-weight: 800;
+    margin-bottom: 1.2rem;
+  }
+
+  .about-intro p {
+    font-size: 1.1rem;
+    color: rgba(255,255,255,0.8);
+    max-width: 620px;
+    margin: 0 auto;
+    line-height: 1.8;
+  }
+
+  .about-section { padding: 5rem 2.5rem; max-width: 1200px; margin: 0 auto; }
+
+  .about-story p {
+    font-size: 1.05rem;
+    color: var(--muted);
+    line-height: 1.9;
+    margin-bottom: 1.2rem;
+    max-width: 780px;
+  }
+
+  .values-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    margin-top: 3rem;
+  }
+
+  .value-card {
+    background: var(--light);
+    border: 1.5px solid var(--border);
+    border-radius: 20px;
+    padding: 2rem;
+    transition: all 0.3s;
+  }
+
+  .value-card:hover {
+    border-color: var(--blue-light);
+    box-shadow: var(--shadow);
+    transform: translateY(-3px);
+  }
+
+  .value-icon {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+  }
+
+  .value-card h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: var(--blue-dark);
+    margin-bottom: 0.7rem;
+  }
+
+  .value-card p {
+    font-size: 0.9rem;
+    color: var(--muted);
+    line-height: 1.75;
+  }
+
+  .roadmap-section { background: var(--light); padding: 5rem 2.5rem; }
+  .roadmap-inner { max-width: 1200px; margin: 0 auto; }
+
+  .roadmap-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin-top: 3rem;
+    position: relative;
+  }
+
+  .roadmap-list::before {
+    content: '';
+    position: absolute;
+    left: 24px;
+    top: 10px; bottom: 10px;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--blue-mid), var(--blue-pale));
+  }
+
+  .rm-item {
+    display: flex;
+    gap: 2.5rem;
+    padding: 2rem 0 2rem 5rem;
+    position: relative;
+  }
+
+  .rm-dot {
+    position: absolute;
+    left: 16px;
+    top: 2.3rem;
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    background: var(--blue-mid);
+    border: 3px solid white;
+    box-shadow: 0 0 0 3px var(--blue-pale);
+  }
+
+  .rm-period {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--blue-mid);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    min-width: 130px;
+    padding-top: 0.25rem;
+  }
+
+  .rm-content h4 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: var(--blue-dark);
+    margin-bottom: 0.4rem;
+  }
+
+  .rm-content p {
+    font-size: 0.9rem;
+    color: var(--muted);
+    line-height: 1.7;
+    max-width: 560px;
+  }
+
+  /* ===== CONTACT PAGE ===== */
+  .contact-intro {
+    background: linear-gradient(135deg, var(--blue-dark), var(--blue-mid));
+    color: white;
+    padding: 5rem 2.5rem;
+    text-align: center;
+  }
+
+  .contact-intro h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.5rem, 5vw, 3.5rem);
+    font-weight: 800;
+    margin-bottom: 1rem;
+  }
+
+  .contact-intro p {
+    font-size: 1.05rem;
+    color: rgba(255,255,255,0.8);
+    max-width: 560px;
+    margin: 0 auto;
+    line-height: 1.8;
+  }
+
+  .contact-section {
+    padding: 5rem 2.5rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1.3fr;
+    gap: 4rem;
+    align-items: start;
+  }
+
+  .contact-info h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--blue-dark);
+    margin-bottom: 1rem;
+  }
+
+  .contact-info p {
+    color: var(--muted);
+    font-size: 1rem;
+    line-height: 1.8;
+    margin-bottom: 2rem;
+  }
+
+  .contact-items {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+  }
+
+  .contact-item {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+
+  .contact-item-icon {
+    width: 44px; height: 44px;
+    background: var(--blue-pale);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+  }
+
+  .contact-item-text h4 {
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: var(--blue-dark);
+    margin-bottom: 0.1rem;
+  }
+
+  .contact-item-text p {
+    font-size: 0.88rem;
+    color: var(--muted);
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  .contact-form {
+    background: var(--light);
+    border: 1.5px solid var(--border);
+    border-radius: 24px;
+    padding: 2.5rem;
+  }
+
+  .contact-form h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--blue-dark);
+    margin-bottom: 1.8rem;
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    margin-bottom: 1rem;
+  }
+
+  .form-group label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--blue-dark);
+  }
+
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    padding: 0.75rem 1rem;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-family: 'Manrope', sans-serif;
+    color: var(--text);
+    background: white;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .form-group input:focus,
+  .form-group select:focus,
+  .form-group textarea:focus {
+    border-color: var(--blue-light);
+    box-shadow: 0 0 0 3px rgba(58,134,255,0.1);
+  }
+
+  .form-group textarea { height: 130px; resize: vertical; }
+
+  /* ===== FOOTER ===== */
+  footer {
+    background: var(--blue-dark);
+    color: white;
+    padding: 4rem 2.5rem 2rem;
+  }
+
+  .footer-grid {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 3rem;
+    padding-bottom: 3rem;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    margin-bottom: 2rem;
+  }
+
+  .footer-brand p {
+    font-size: 0.9rem;
+    color: rgba(255,255,255,0.6);
+    line-height: 1.8;
+    margin-top: 1rem;
+    max-width: 300px;
+  }
+
+  .footer-col h4 {
+    font-weight: 700;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: rgba(255,255,255,0.5);
+    margin-bottom: 1.2rem;
+  }
+
+  .footer-col ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+  }
+
+  .footer-col ul li button {
+    background: none;
+    border: none;
+    color: rgba(255,255,255,0.7);
+    font-size: 0.9rem;
+    cursor: pointer;
+    font-family: 'Manrope', sans-serif;
+    padding: 0;
+    text-align: left;
+    transition: color 0.2s;
+  }
+
+  .footer-col ul li button:hover { color: white; }
+
+  .footer-bottom {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.82rem;
+    color: rgba(255,255,255,0.4);
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .footer-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: white;
+  }
+
+  .footer-logo span { color: #93C5FD; }
+
+  @media (max-width: 900px) {
+    .hero-inner, .why-grid, .feature-block, .contact-section { grid-template-columns: 1fr; }
+    .feature-block.reverse { direction: ltr; }
+    .preview-grid, .testimonials-grid, .values-grid, .pricing-grid { grid-template-columns: 1fr; }
+    .footer-grid { grid-template-columns: 1fr 1fr; }
+    .form-row { grid-template-columns: 1fr; }
+    nav { padding: 0 1rem; }
+    .nav-tabs { gap: 0; }
+    .nav-tabs li button { padding: 0.5rem 0.6rem; font-size: 0.78rem; }
+    .price-card.featured { transform: none; }
+    .compare-table { font-size: 0.8rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo" onclick="showPage('home')">Task<span>ly</span></div>
+  <ul class="nav-tabs">
+    <li><button onclick="showPage('home')" id="tab-home" class="active">Home</button></li>
+    <li><button onclick="showPage('features')" id="tab-features">Functies</button></li>
+    <li><button onclick="showPage('pricing')" id="tab-pricing">Prijzen</button></li>
+    <li><button onclick="showPage('about')" id="tab-about">Over ons</button></li>
+    <li><button onclick="showPage('contact')" id="tab-contact">Contact</button></li>
+    <li><button onclick="showPage('pricing')" class="nav-cta-btn">Gratis starten</button></li>
+  </ul>
+</nav>
+
+<!-- ==================== HOME PAGE ==================== -->
+<div class="page active" id="page-home">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-inner">
+      <div>
+        <div class="hero-badge">
+          <div class="hero-badge-dot"></div>
+          Nu beschikbaar — gratis te proberen
+        </div>
+        <h1>Werk slimmer,<br>niet <em>harder.</em></h1>
+        <p class="hero-desc">
+          Taskly is de alles-in-één AI-productiviteitsapp die jouw taken, e-mails, vergaderingen, documenten en sociale media automatisch beheert. Of je nu student, freelancer of ondernemer bent — Taskly bespaard je dagelijks uren aan saai, repetitief werk zodat jij je kunt focussen op wat echt telt. Geen complexe instelling, geen technische kennis vereist. Gewoon inloggen en beginnen.
+        </p>
+        <div class="hero-btns">
+          <button class="btn-white" onclick="showPage('pricing')">Gratis beginnen →</button>
+          <button class="btn-outline-white" onclick="showPage('features')">Bekijk alle functies</button>
+        </div>
+        <div class="hero-stats">
+          <div>
+            <div class="hero-stat-num">50K+</div>
+            <div class="hero-stat-label">Actieve gebruikers</div>
+          </div>
+          <div>
+            <div class="hero-stat-num">4.9★</div>
+            <div class="hero-stat-label">App Store rating</div>
+          </div>
+          <div>
+            <div class="hero-stat-num">3 uur</div>
+            <div class="hero-stat-label">Bespaard per dag</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-visual">
+        <div class="hero-visual-header">
+          <div class="app-dot" style="background:#FF5F57"></div>
+          <div class="app-dot" style="background:#FFBD2E"></div>
+          <div class="app-dot" style="background:#28CA41"></div>
+          <span style="margin-left:0.5rem;font-size:0.82rem;color:rgba(255,255,255,0.5)">Taskly — Mijn dashboard</span>
+        </div>
+        <div class="mock-task">
+          <div class="mock-check done">✓</div>
+          <div>
+            <div style="font-weight:600">E-mail aan klant beantwoord</div>
+            <div style="font-size:0.75rem;color:rgba(255,255,255,0.5)">Automatisch door AI — 09:14</div>
+          </div>
+          <div class="ai-badge-small">AI</div>
+        </div>
+        <div class="mock-task">
+          <div class="mock-check done">✓</div>
+          <div>
+            <div style="font-weight:600">Vergadering samengevat</div>
+            <div style="font-size:0.75rem;color:rgba(255,255,255,0.5)">3 actiepunten geïdentificeerd</div>
+          </div>
+          <div class="ai-badge-small">AI</div>
+        </div>
+        <div class="mock-task">
+          <div class="mock-check pending"></div>
+          <div>
+            <div style="font-weight:600">LinkedIn post inplannen</div>
+            <div style="font-size:0.75rem;color:rgba(255,255,255,0.5)">Concept klaar — goedkeuring vereist</div>
+          </div>
+          <div class="ai-badge-small">AI</div>
+        </div>
+        <div class="mock-task">
+          <div class="mock-check pending"></div>
+          <div>
+            <div style="font-weight:600">Offerte opstellen voor Project X</div>
+            <div style="font-size:0.75rem;color:rgba(255,255,255,0.5)">Deadline: vandaag 17:00</div>
+          </div>
+          <div class="ai-badge-small">AI</div>
+        </div>
+        <div style="margin-top:1.2rem;padding-top:1rem;border-top:1px solid rgba(255,255,255,0.1);font-size:0.8rem;color:rgba(255,255,255,0.5);text-align:center;">
+          ⚡ Taskly heeft vandaag al 2,5 uur bespaard
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TICKER -->
+  <div class="ticker-section">
+    <div class="ticker">
+      <div class="ticker-item"><span>✦</span> AI Taakbeheer</div>
+      <div class="ticker-item"><span>✦</span> E-mail Automatisering</div>
+      <div class="ticker-item"><span>✦</span> Vergaderingen Samenvatten</div>
+      <div class="ticker-item"><span>✦</span> Social Media AI</div>
+      <div class="ticker-item"><span>✦</span> Spraakassistent</div>
+      <div class="ticker-item"><span>✦</span> Document Generatie</div>
+      <div class="ticker-item"><span>✦</span> 1300+ Integraties</div>
+      <div class="ticker-item"><span>✦</span> AI Afbeeldingen & Video</div>
+      <div class="ticker-item"><span>✦</span> GDPR Compliant</div>
+      <div class="ticker-item"><span>✦</span> AI Taakbeheer</div>
+      <div class="ticker-item"><span>✦</span> E-mail Automatisering</div>
+      <div class="ticker-item"><span>✦</span> Vergaderingen Samenvatten</div>
+      <div class="ticker-item"><span>✦</span> Social Media AI</div>
+      <div class="ticker-item"><span>✦</span> Spraakassistent</div>
+      <div class="ticker-item"><span>✦</span> Document Generatie</div>
+      <div class="ticker-item"><span>✦</span> 1300+ Integraties</div>
+      <div class="ticker-item"><span>✦</span> AI Afbeeldingen & Video</div>
+      <div class="ticker-item"><span>✦</span> GDPR Compliant</div>
+    </div>
+  </div>
+
+  <!-- WHY TASKLY -->
+  <div class="section-full">
+    <div class="inner">
+      <div class="section-label">Waarom Taskly?</div>
+      <div class="why-grid">
+        <div class="why-text">
+          <h3>Stoppen met tijd verspillen aan alledaagse taken</h3>
+          <p>Gemiddeld verspilt een professional meer dan 2,5 uur per dag aan e-mails schrijven, vergaderingen bijhouden, documenten opstellen en social media beheren. Dat is ruim 12 uur per week — tijd die je veel beter kunt besteden aan werk dat er écht toe doet.</p>
+          <p>Taskly neemt al dat repetitieve, tijdrovende werk van je over. Onze geavanceerde AI begrijpt jouw werkstijl, jouw communicatiestijl en jouw prioriteiten, en handelt taken automatisch af terwijl jij je focust op groei, creativiteit en relaties.</p>
+          <p>We bouwen Taskly voor iedereen: van de student die scripties schrijft en deadlines bijhoudt, tot de ondernemer die zijn hele bedrijf wil automatiseren. Geen complexe software, geen dure consultants. Gewoon een slimme app die voor je werkt.</p>
+          <div class="why-points">
+            <div class="why-point">
+              <div class="why-point-icon">⚡</div>
+              <div class="why-point-text">
+                <h4>Direct resultaat</h4>
+                <p>Binnen 5 minuten na het aanmaken van je account bespaar je al tijd. Geen lange onboardingprocessen of technische kennis vereist.</p>
+              </div>
+            </div>
+            <div class="why-point">
+              <div class="why-point-icon">🧠</div>
+              <div class="why-point-text">
+                <h4>Leert van jou</h4>
+                <p>Taskly past zich aan jouw werkstijl, toon en prioriteiten aan. Hoe meer je het gebruikt, hoe beter en persoonlijker het wordt.</p>
+              </div>
+            </div>
+            <div class="why-point">
+              <div class="why-point-icon">🔒</div>
+              <div class="why-point-text">
+                <h4>Veilig & privé</h4>
+                <p>End-to-end encryptie, volledig GDPR-compliant en je data wordt nooit doorverkocht aan derden. Jouw gegevens zijn en blijven van jou.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="why-visual">
+          <div style="text-align:center;margin-bottom:1.5rem;">
+            <div style="font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:800;color:var(--blue-dark);margin-bottom:0.3rem;">Tijdsbesparing per week</div>
+            <div style="font-size:0.85rem;color:var(--muted)">Gemiddeld over alle gebruikers</div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:0.8rem;">
+            <div>
+              <div style="display:flex;justify-content:space-between;font-size:0.85rem;font-weight:600;color:var(--blue-dark);margin-bottom:0.3rem;"><span>E-mails</span><span>4,5 uur</span></div>
+              <div style="background:#dce8ff;border-radius:100px;height:8px;"><div style="background:var(--blue-mid);width:85%;height:8px;border-radius:100px;"></div></div>
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;font-size:0.85rem;font-weight:600;color:var(--blue-dark);margin-bottom:0.3rem;"><span>Vergaderingen</span><span>3,0 uur</span></div>
+              <div style="background:#dce8ff;border-radius:100px;height:8px;"><div style="background:var(--blue-mid);width:65%;height:8px;border-radius:100px;"></div></div>
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;font-size:0.85rem;font-weight:600;color:var(--blue-dark);margin-bottom:0.3rem;"><span>Social media</span><span>2,5 uur</span></div>
+              <div style="background:#dce8ff;border-radius:100px;height:8px;"><div style="background:var(--blue-mid);width:55%;height:8px;border-radius:100px;"></div></div>
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;font-size:0.85rem;font-weight:600;color:var(--blue-dark);margin-bottom:0.3rem;"><span>Documenten</span><span>2,0 uur</span></div>
+              <div style="background:#dce8ff;border-radius:100px;height:8px;"><div style="background:var(--blue-mid);width:45%;height:8px;border-radius:100px;"></div></div>
+            </div>
+            <div style="margin-top:1rem;padding-top:1rem;border-top:1.5px solid var(--border);text-align:center;">
+              <div style="font-family:'Playfair Display',serif;font-size:2rem;font-weight:800;color:var(--blue-dark);">12 uur</div>
+              <div style="font-size:0.85rem;color:var(--muted);">gemiddelde besparing per week</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FEATURE PREVIEWS -->
+  <div class="section">
+    <div class="section-label">Functies</div>
+    <h2 class="section-title">Alles wat je nodig hebt,<br>aangedreven door AI.</h2>
+    <p class="section-body">Taskly combineert tientallen krachtige AI-tools in één overzichtelijke app. Van het schrijven van professionele e-mails tot het automatisch posten op social media — alles werkt naadloos samen.</p>
+    <div class="preview-grid">
+      <div class="preview-card" onclick="showPage('features')">
+        <div class="preview-icon">🧠</div>
+        <h3>AI Tekstassistent</h3>
+        <p>Schrijf e-mails, offertes, rapporten, brieven en contracten automatisch in jouw eigen schrijfstijl. Vertaal naar meer dan 50 talen met één klik en pas de toon aan van formeel naar casual, afhankelijk van de ontvanger.</p>
+      </div>
+      <div class="preview-card" onclick="showPage('features')">
+        <div class="preview-icon">🎙️</div>
+        <h3>Spraakassistent</h3>
+        <p>Praat met Taskly zoals je met een persoonlijke assistent praat. Neem vergaderingen live op, laat ze automatisch samenvatten en zet gesproken opdrachten direct om in taken, herinneringen of e-mails.</p>
+      </div>
+      <div class="preview-card" onclick="showPage('features')">
+        <div class="preview-icon">📱</div>
+        <h3>Social Media AI</h3>
+        <p>Genereer engaging posts voor Instagram, TikTok, LinkedIn en X met de juiste hashtags en toon. Taskly plant automatisch in op de beste tijden en analyseert welke content het beste werkt voor jouw publiek.</p>
+      </div>
+      <div class="preview-card" onclick="showPage('features')">
+        <div class="preview-icon">🖼️</div>
+        <h3>AI Afbeeldingen & Video</h3>
+        <p>Maak professionele productfoto's, logo's, banners en social media visuals vanuit een simpele tekstbeschrijving. Genereer korte promo-video's en YouTube-thumbnails zonder dure designer of software.</p>
+      </div>
+      <div class="preview-card" onclick="showPage('features')">
+        <div class="preview-icon">📋</div>
+        <h3>Slim Taakbeheer</h3>
+        <p>Taskly prioriteert jouw takenlijst automatisch op basis van deadlines, urgentie en jouw werkbelasting. Grote projecten worden automatisch opgedeeld in behapbare subtaken met realistische deadlines.</p>
+      </div>
+      <div class="preview-card" onclick="showPage('features')">
+        <div class="preview-icon">🔗</div>
+        <h3>1300+ Integraties</h3>
+        <p>Koppel Taskly aan Gmail, Slack, WhatsApp Business, Google Calendar, Notion, Trello, Shopify, LinkedIn en duizenden andere apps via Zapier. Alles werkt samen zonder handmatig kopiëren en plakken.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- TESTIMONIALS -->
+  <div class="section-full">
+    <div class="inner">
+      <div class="section-label">Wat gebruikers zeggen</div>
+      <h2 class="section-title">Duizenden mensen werken<br>al slimmer met Taskly.</h2>
+      <div class="testimonials-grid">
+        <div class="testimonial-card">
+          <div class="stars">★★★★★</div>
+          <p class="testimonial-text">"Ik was sceptisch over nog een productiviteitsapp, maar Taskly heeft me echt verrast. Het schrijft mijn e-mails in mijn eigen stijl, houdt mijn agenda bij en geeft me elke ochtend een duidelijk overzicht van mijn dag. Ik bespaar minstens 2 uur per dag. Dit is de beste investering die ik dit jaar heb gedaan voor mijn bedrijf."</p>
+          <div class="testimonial-author">
+            <div class="avatar" style="background:linear-gradient(135deg,#1E5FBD,#3A86FF)">S</div>
+            <div>
+              <div class="author-name">Sophie de Vries</div>
+              <div class="author-role">Freelance marketeer, Amsterdam</div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <div class="stars">★★★★★</div>
+          <p class="testimonial-text">"Als CEO van een groeiend bedrijf heb ik simpelweg geen tijd voor alle kleine taakjes. Taskly beheert mijn inbox, samenvat mijn vergaderingen en schrijft zelfs mijn LinkedIn-posts. Mijn team is productiever dan ooit en ik kan me eindelijk focussen op strategie in plaats van administratie."</p>
+          <div class="testimonial-author">
+            <div class="avatar" style="background:linear-gradient(135deg,#0A2463,#1E5FBD)">M</div>
+            <div>
+              <div class="author-name">Marco Jansen</div>
+              <div class="author-role">CEO, TechNL Solutions</div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <div class="stars">★★★★★</div>
+          <p class="testimonial-text">"Als HBO-student gebruik ik Taskly voor samenvattingen van lessen, het schrijven van scripties en mijn planning. De gratis versie is al ongelofelijk krachtig. Ik haal hogere cijfers omdat ik minder tijd kwijt ben aan organisatie en meer aan daadwerkelijk leren. Absolute aanrader voor iedereen!"</p>
+          <div class="testimonial-author">
+            <div class="avatar" style="background:linear-gradient(135deg,#3A86FF,#60A5FA)">L</div>
+            <div>
+              <div class="author-name">Lisa Bakker</div>
+              <div class="author-role">HBO Student, Rotterdam</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CTA BANNER -->
+  <div class="cta-banner">
+    <h2>Klaar om slimmer te werken?</h2>
+    <p>Sluit je aan bij meer dan 50.000 gebruikers die dagelijks uren besparen met Taskly. Begin vandaag gratis — geen creditcard nodig, geen verborgen kosten. Cancel altijd.</p>
+    <div class="hero-btns" style="justify-content:center;">
+      <button class="btn-white" onclick="showPage('pricing')">Gratis beginnen →</button>
+      <button class="btn-outline-white" onclick="showPage('contact')">Stel een vraag</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- ==================== FEATURES PAGE ==================== -->
+<div class="page" id="page-features">
+
+  <div class="features-intro">
+    <div class="section-label" style="background:rgba(255,255,255,0.15);color:white;">Alle functies</div>
+    <h1>Krachtige AI-tools,<br>één simpele app.</h1>
+    <p>Taskly combineert alles wat je nodig hebt om productief te zijn in één app. Geen tien verschillende abonnementen meer — gewoon Taskly, en je bent klaar.</p>
+  </div>
+
+  <!-- Feature: AI Tekst -->
+  <div class="feature-block">
+    <div class="feature-block-text">
+      <div class="section-label">AI Tekstassistent</div>
+      <h2>Schrijf sneller, beter en in jouw eigen stijl.</h2>
+      <p>Taskly's AI-tekstassistent leert jouw schrijfstijl kennen en schrijft e-mails, documenten en berichten die klinken alsof jij ze zelf hebt geschreven — alleen veel sneller en zonder fouten. Of het nu gaat om een professionele offerte, een vriendelijk klantenservicebericht of een formeel juridisch document, de AI past de toon en het formaat perfect aan.</p>
+      <p>Dankzij de ingebouwde vertaalfunctie communiceer je moeiteloos met internationale klanten in meer dan 50 talen. De AI begrijpt nuances en culturele verschillen, zodat je boodschap altijd overkomt zoals bedoeld. Nooit meer urenlang staren naar een leeg document.</p>
+      <ul class="feature-list">
+        <li>E-mails schrijven, beantwoorden en samenvatten in seconden</li>
+        <li>Offertes, rapporten, brieven en contracten automatisch genereren</li>
+        <li>Vertalen naar 50+ talen met culturele nuances</li>
+        <li>Toon aanpassen: formeel, casual, zakelijk of vriendelijk</li>
+        <li>Grammatica en stijl automatisch verbeteren</li>
+        <li>Blog- en nieuwsbriefartikelen schrijven op basis van trefwoorden</li>
+      </ul>
+    </div>
+    <div class="feature-visual">
+      <div class="visual-row">
+        <div class="visual-icon vi-blue">📧</div>
+        <div><div class="visual-label">E-mail aan klant Jan</div><div class="visual-sub">Automatisch beantwoord — 0,3 sec</div></div>
+        <div class="visual-tag tag-green">Verstuurd</div>
+      </div>
+      <div class="visual-row">
+        <div class="visual-icon vi-yellow">📄</div>
+        <div><div class="visual-label">Offerte Project Alpha</div><div class="visual-sub">Gegenereerd op basis van briefing</div></div>
+        <div class="visual-tag tag-blue">AI</div>
+      </div>
+      <div class="visual-row">
+        <div class="visual-icon vi-blue">🌍</div>
+        <div><div class="visual-label">Vertaald naar Engels</div><div class="visual-sub">Professioneel, idiomatisch</div></div>
+        <div class="visual-tag tag-green">Klaar</div>
+      </div>
+      <div class="visual-row">
+        <div class="visual-icon vi-green">✍️</div>
+        <div><div class="visual-label">Nieuwsbrief april</div><div class="visual-sub">600 woorden, SEO-geoptimaliseerd</div></div>
+        <div class="visual-tag tag-blue">Concept</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="feature-divider"></div>
+
+  <!-- Feature: Spraak -->
+  <div class="feature-block reverse">
+    <div class="feature-visual">
+      <div class="visual-row">
+        <div class="visual-icon vi-blue">🎙️</div>
+        <div><div class="visual-label">Vergadering opgenomen</div><div class="visual-sub">47 minuten — 6 deelnemers</div></div>
+        <div class="visual-tag tag-blue">AI</div>
+      </div>
+      <div class="visual-row">
+        <div class="visual-icon vi-green">📋</div>
+        <div><div class="visual-label">Samenvatting gegenereerd</div><div class="visual-sub">4 beslissingen, 8 actiepunten</div></div>
+        <div class="visual-tag tag-green">Klaar</div>
+      </div>
+      <div class="visual-row">
+        <div class="visual-icon vi-yellow">✅</div>
+        <div><div class="visual-label">Taken aangemaakt</div><div class="visual-sub">Automatisch toegewezen aan team</div></div>
+        <div class="visual-tag tag-green">Gedaan</div>
+      </div>
+    </div>
+    <div class="feature-block-text">
+      <div class="section-label">Spraakassistent</div>
+      <h2>Praat met Taskly. Het regelt de rest.</h2>
+      <p>Met de geavanceerde spraakassistent van Taskly hoef je niets meer te typen. Spreek je opdrachten in, stel vragen of dicteer een volledige e-mail — de AI begrijpt je en handelt direct. Hands-free werken in de auto, op de fiets of tijdens het koken is nu mogelijk.</p>
+      <p>De meest waardevolle functie is de vergaderingsassistent. Taskly luistert live mee, herkent wie er spreekt, noteert alle beslissingen en actiepunten, en stuurt na afloop automatisch een overzichtelijke samenvatting naar alle deelnemers. Nooit meer een actie vergeten.</p>
+      <ul class="feature-list">
+        <li>Stemcommando's voor taken aanmaken en beheren</li>
+        <li>Vergaderingen live opnemen en automatisch samenvatten</li>
+        <li>Sprekerherkenning — wie zei wat?</li>
+        <li>Actiepunten automatisch distribueren naar teamleden</li>
+        <li>Meertalige stemherkenning in 30+ talen</li>
+        <li>Hands-free modus voor onderweg</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="feature-divider"></div>
+
+  <!-- Feature: Social Media -->
+  <div class="feature-block">
+    <div class="feature-block-text">
+      <div class="section-label">Social Media AI</div>
+      <h2>Jouw online aanwezigheid op autopilot.</h2>
+      <p>Consistent aanwezig zijn op social media is voor de meeste ondernemers en creators een enorme tijdsinvestering. Taskly maakt dat probleem overbodig. Beschrijf simpelweg waar je post over wil gaan, en de AI schrijft engaging content die past bij jouw merk, doelgroep en platform.</p>
+      <p>Taskly analyseert wanneer jouw volgers het meest actief zijn en plant posts automatisch in op het perfecte moment. Na publicatie monitort Taskly de prestaties en leert ervan — zodat elke volgende post beter presteert dan de vorige.</p>
+      <ul class="feature-list">
+        <li>Posts schrijven voor Instagram, TikTok, LinkedIn en X</li>
+        <li>Hashtag generator op basis van onderwerp en platform</li>
+        <li>Automatisch inplannen op de beste tijden</li>
+        <li>Content kalender voor weken vooruit vullen</li>
+        <li>Captions genereren bij geüploade foto's</li>
+        <li>Analytics samenvatten in begrijpelijke taal</li>
+      </ul>
+    </div>
+    <div class="feature-visual">
+      <div class="visual-row">
+        <div class="visual-icon vi-blue">📸</div>
+        <div><div class="visual-label">Instagram post geschreven</div><div class="visual-sub">280 tekens + 12 hashtags</div></div>
+        <div class="visual-tag tag-blue">Ingepland</div>
+      </div>
+      <div class="visual-row">
+        <div class="visual-icon vi-green">💼</div>
+        <div><div class="visual-label">LinkedIn artikel</div><div class="visual-sub">Bereik: +340% vs vorige week</div></div>
+        <div class="visual-tag tag-green">Gepubliceerd</div>
+      </div>
+      <div class="visual-row">
+        <div class="visual-icon vi-yellow">🎵</div>
+        <div><div class="visual-label">TikTok script klaar</div><div class="visual-sub">60 seconden, trending hook</div></div>
+        <div class="visual-tag tag-blue">Concept</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="feature-divider"></div>
+
+  <!-- Feature: Integraties -->
+  <div class="feature-block reverse">
+    <div class="feature-visual">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.7rem;">
+        <div class="visual-row" style="flex-direction:column;text-align:center;gap:0.3rem;padding:0.8rem;">
+          <div style="font-size:1.5rem;">📧</div><div class="visual-label">Gmail</div>
+        </div>
+        <div class="visual-row" style="flex-direction:column;text-align:center;gap:0.3rem;padding:0.8rem;">
+          <div style="font-size:1.5rem;">💬</div><div class="visual-label">Slack</div>
+        </div>
+        <div class="visual-row" style="flex-direction:column;text-align:center;gap:0.3rem;padding:0.8rem;">
+          <div style="font-size:1.5rem;">📅</div><div class="visual-label">Calendar</div>
+        </div>
+        <div class="visual-row" style="flex-direction:column;text-align:center;gap:0.3rem;padding:0.8rem;">
+          <div style="font-size:1.5rem;">📝</div><div class="visual-label">Notion</div>
+        </div>
+        <div class="visual-row" style="flex-direction:column;text-align:center;gap:0.3rem;padding:0.8rem;">
+          <div style="font-size:1.5rem;">🛍️</div><div class="visual-label">Shopify</div>
+        </div>
+        <div class="visual-row" style="flex-direction:column;text-align:center;gap:0.3rem;padding:0.8rem;">
+          <div style="font-size:1.5rem;">⚡</div><div class="visual-label">Zapier</div>
+        </div>
+      </div>
+    </div>
+    <div class="feature-block-text">
+      <div class="section-label">Integraties</div>
+      <h2>Werkt met alles wat jij al gebruikt.</h2>
+      <p>Taskly integreert naadloos met meer dan 1.300 populaire apps en diensten. Koppel je bestaande tools en laat Taskly alle losse systemen samenbinden tot één gestroomlijnd werkproces. Geen data meer kopiëren tussen apps, geen informatie die verloren gaat tussen systemen.</p>
+      <p>Via onze Zapier-integratie bereik je zelfs de meest nicheprogramma's. En voor grote bedrijven bieden we API-toegang en maatwerk-integraties die perfect aansluiten op bestaande IT-infrastructuur.</p>
+      <ul class="feature-list">
+        <li>Gmail, Outlook — e-mails automatisch verwerken</li>
+        <li>Slack, Teams, WhatsApp Business — berichten beheren</li>
+        <li>Google Calendar, Outlook — agenda synchroniseren</li>
+        <li>Notion, Trello, Asana — taken importeren en exporteren</li>
+        <li>Shopify, WordPress — content en orders beheren</li>
+        <li>Salesforce, HubSpot — CRM automatiseren</li>
+      </ul>
+    </div>
+  </div>
+
+</div>
+
+<!-- ==================== PRICING PAGE ==================== -->
+<div class="page" id="page-pricing">
+
+  <div class="pricing-intro">
+    <div class="section-label" style="background:rgba(255,255,255,0.15);color:white;">Transparante prijzen</div>
+    <h1>Begin gratis,<br>groei naar meer.</h1>
+    <p>Geen verborgen kosten, geen verplichtingen. Kies het plan dat bij jou past en upgrade of downgrade wanneer je wil. Alle betaalde plannen hebben een 14-daagse geld-terug-garantie.</p>
+  </div>
+
+  <div class="pricing-section">
+    <div class="pricing-grid">
+      <div class="price-card">
+        <div class="plan-name">Gratis</div>
+        <div class="plan-tagline">Perfect om Taskly uit te proberen en te ontdekken wat AI voor jou kan betekenen. Geen creditcard nodig.</div>
+        <div class="plan-price">€0 <span>/ maand</span></div>
+        <p class="plan-note">Voor altijd gratis, geen tijdslimiet</p>
+        <ul class="plan-features">
+          <li><span class="check-icon">✓</span> 10 AI-teksten per maand</li>
+          <li><span class="check-icon">✓</span> 5 AI-afbeeldingen per maand</li>
+          <li><span class="check-icon">✓</span> Basis taakbeheer & planning</li>
+          <li><span class="check-icon">✓</span> 2 app-integraties naar keuze</li>
+          <li><span class="check-icon">✓</span> Notities samenvatten (3 per dag)</li>
+          <li><span class="check-icon">✓</span> Basis spraakcommando's</li>
+          <li><span class="check-icon">✓</span> Community forum support</li>
+          <li><span class="check-icon">✓</span> iOS, Android & Web</li>
+        </ul>
+        <button class="btn-outline">Gratis beginnen</button>
+      </div>
+
+      <div class="price-card featured">
+        <div class="popular-tag">⭐ Meest gekozen</div>
+        <div class="plan-name">Premium</div>
+        <div class="plan-tagline">Voor individuen en freelancers die serieus productief willen zijn. De complete AI-werkassistent in je zak.</div>
+        <div class="plan-price">€9,99 <span>/ maand</span></div>
+        <p class="plan-note">€99,- per jaar — bespaar 2 maanden</p>
+        <ul class="plan-features">
+          <li><span class="check-icon">✓</span> Onbeperkte AI-teksten & documenten</li>
+          <li><span class="check-icon">✓</span> 100 AI-afbeeldingen per maand</li>
+          <li><span class="check-icon">✓</span> 10 AI-video's per maand</li>
+          <li><span class="check-icon">✓</span> Volledige spraakassistent</li>
+          <li><span class="check-icon">✓</span> Social media AI & inplanning</li>
+          <li><span class="check-icon">✓</span> 10 app-integraties</li>
+          <li><span class="check-icon">✓</span> E-mail automatisering</li>
+          <li><span class="check-icon">✓</span> Vergaderingen opnemen & samenvatten</li>
+          <li><span class="check-icon">✓</span> Prioriteit e-mail support</li>
+          <li><span class="check-icon">✓</span> Alle platforms inclusief Desktop</li>
+        </ul>
+        <button class="btn-primary">Starten met Premium</button>
+      </div>
+
+      <div class="price-card">
+        <div class="plan-name">Business</div>
+        <div class="plan-tagline">Voor teams en bedrijven die samen slimmer willen werken. Schaalbaar, veilig en krachtig.</div>
+        <div class="plan-price">€29,99 <span>/ maand</span></div>
+        <p class="plan-note">Per team — tot 20 gebruikers inbegrepen</p>
+        <ul class="plan-features">
+          <li><span class="check-icon">✓</span> Alles van Premium</li>
+          <li><span class="check-icon">✓</span> Tot 20 teamleden inbegrepen</li>
+          <li><span class="check-icon">✓</span> Onbeperkte app-integraties</li>
+          <li><span class="check-icon">✓</span> AI getraind op jouw bedrijfsdata</li>
+          <li><span class="check-icon">✓</span> CRM-integratie (Salesforce, HubSpot)</li>
+          <li><span class="check-icon">✓</span> Geavanceerde teamanalytics</li>
+          <li><span class="check-icon">✓</span> Onbeperkte AI-afbeeldingen & video</li>
+          <li><span class="check-icon">✓</span> SSO & geavanceerde beveiliging</li>
+          <li><span class="check-icon">✓</span> Dedicated accountmanager</li>
+          <li><span class="check-icon">✓</span> Telefonische prioriteitssupport</li>
+        </ul>
+        <button class="btn-outline" onclick="showPage('contact')">Contact opnemen</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- COMPARE TABLE -->
+  <div class="compare-section">
+    <div class="compare-inner">
+      <div class="section-label">Vergelijking</div>
+      <h2 class="section-title">Plannen vergelijken</h2>
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>Functie</th>
+            <th>Gratis</th>
+            <th>Premium</th>
+            <th>Business</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>AI-teksten per maand</td><td>10</td><td>Onbeperkt</td><td>Onbeperkt</td></tr>
+          <tr><td>AI-afbeeldingen per maand</td><td>5</td><td>100</td><td>Onbeperkt</td></tr>
+          <tr><td>AI-video's per maand</td><td class="t-no">✗</td><td>10</td><td>Onbeperkt</td></tr>
+          <tr><td>Spraakassistent</td><td>Basis</td><td class="t-yes">✓</td><td class="t-yes">✓</td></tr>
+          <tr><td>Social media AI</td><td class="t-no">✗</td><td class="t-yes">✓</td><td class="t-yes">✓</td></tr>
+          <tr><td>App-integraties</td><td>2</td><td>10</td><td>Onbeperkt</td></tr>
+          <tr><td>E-mail automatisering</td><td class="t-no">✗</td><td class="t-yes">✓</td><td class="t-yes">✓</td></tr>
+          <tr><td>Vergaderingen samenvatten</td><td class="t-no">✗</td><td class="t-yes">✓</td><td class="t-yes">✓</td></tr>
+          <tr><td>Teamleden</td><td>1</td><td>1</td><td>Tot 20</td></tr>
+          <tr><td>AI op bedrijfsdata</td><td class="t-no">✗</td><td class="t-no">✗</td><td class="t-yes">✓</td></tr>
+          <tr><td>Dedicated support</td><td class="t-no">✗</td><td class="t-no">✗</td><td class="t-yes">✓</td></tr>
+          <tr><td>GDPR & beveiliging</td><td class="t-yes">✓</td><td class="t-yes">✓</td><td class="t-yes">✓</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- FAQ -->
+  <div class="faq-section">
+    <div class="section-label">FAQ</div>
+    <h2 class="section-title">Veelgestelde vragen</h2>
+    <div class="faq-item">
+      <div class="faq-q">Heb ik een creditcard nodig om te beginnen?</div>
+      <div class="faq-a">Nee. Je kunt gratis beginnen zonder creditcard of betaalgegevens. Je hoeft pas te betalen als je kiest voor een Premium of Business abonnement. Er zijn geen verborgen kosten of automatische upgrades.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">Kan ik op elk moment opzeggen?</div>
+      <div class="faq-a">Ja, je kunt je abonnement op elk moment opzeggen, zonder opzegtermijn. Je behoudt toegang tot je betaalde functies tot het einde van de lopende periode. We bieden ook een 14-daagse geld-terug-garantie op alle betaalde plannen.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">Is mijn data veilig bij Taskly?</div>
+      <div class="faq-a">Absoluut. We gebruiken end-to-end encryptie voor alle data, zijn volledig GDPR-compliant en verkopen nooit jouw gegevens aan derden. Jouw data wordt alleen gebruikt om Taskly beter voor jou te maken — niet voor advertenties of andere doeleinden.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">Werkt Taskly ook voor teams?</div>
+      <div class="faq-a">Ja, het Business-plan is speciaal ontworpen voor teams tot 20 mensen. Je kunt taken verdelen, samenwerken aan documenten en gezamenlijke inboxen beheren. Voor grotere teams bieden we een Enterprise-plan op maat — neem contact op voor een offerte.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">Welke talen ondersteunt Taskly?</div>
+      <div class="faq-a">Taskly ondersteunt meer dan 50 talen voor tekst en vertaling, en meer dan 30 talen voor de spraakassistent. De interface is beschikbaar in Nederlands, Engels, Duits, Frans en Spaans. Meer talen worden regelmatig toegevoegd.</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ==================== ABOUT PAGE ==================== -->
+<div class="page" id="page-about">
+
+  <div class="about-intro">
+    <div class="section-label" style="background:rgba(255,255,255,0.15);color:white;">Ons verhaal</div>
+    <h1>Gebouwd door mensen<br>die het zelf nodig hadden.</h1>
+    <p>Taskly begon als een simpele frustratie: te veel tijd kwijt aan e-mails, vergaderingen en administratie. We bouwden een oplossing — en ontdekten dat miljoenen anderen hetzelfde probleem hebben.</p>
+  </div>
+
+  <div class="about-section">
+    <div class="about-story">
+      <div class="section-label">Ons verhaal</div>
+      <h2 class="section-title">Hoe Taskly ontstond</h2>
+      <p>Het idee voor Taskly ontstond vanuit een simpele maar universele frustratie: ondanks alle moderne technologie, apps en tools leken we meer tijd dan ooit kwijt te zijn aan administratie, e-mails en organisatie. We werkten harder, maar werden we ook productiever? Het antwoord was nee.</p>
+      <p>We begonnen met onderzoeken hoe professionals hun tijd besteedden. De resultaten waren schrikbarend: gemiddeld 2,5 uur per dag ging verloren aan e-mails lezen en schrijven. Bijna een uur per dag aan het zoeken naar informatie in verschillende apps. En talloze minuten die verspild werden aan het kopiëren van data van het ene systeem naar het andere.</p>
+      <p>De bestaande productiviteitsapps losten het probleem maar half op. Ze konden taken bijhouden of notities synchroniseren, maar niemand had alle losse stukjes samengebracht op een intelligente manier. Dat was onze kans: wat als één app al die taken voor je kon overnemen, leren van jouw gewoonten en steeds beter kon worden naarmate je het meer gebruikte?</p>
+      <p>Taskly werd geboren. We begonnen met een kleine groep bètatesters in Nederland en België, verbeterden de app week na week op basis van echte feedback, en lanceerden uiteindelijk een product dat verder gaat dan een gewone productiviteitsapp. Taskly is een AI-assistent die niet alleen taken beheert, maar ook begrijpt wat je wil bereiken en je actief helpt om daar te komen.</p>
+      <p>Vandaag gebruiken meer dan 50.000 mensen Taskly dagelijks — van studenten die hun eerste scriptie schrijven tot ondernemers die complete bedrijven runnen. We zijn trots op elke gebruiker die ons vertelt dat Taskly zijn of haar leven een beetje makkelijker heeft gemaakt. En we stoppen niet totdat Taskly voor iedereen de slimste werkkollega is die ze ooit hebben gehad.</p>
+    </div>
+  </div>
+
+  <!-- Values -->
+  <div class="section-full">
+    <div class="inner">
+      <div class="section-label">Onze waarden</div>
+      <h2 class="section-title">Waar we voor staan</h2>
+      <div class="values-grid">
+        <div class="value-card">
+          <div class="value-icon">⚡</div>
+          <h3>Efficiëntie boven alles</h3>
+          <p>Elke functie die we bouwen moet één ding doen: jou meer tijd geven. We voegen nooit iets toe voor de show. Als het jou niet sneller of slimmer maakt, bouwen we het niet.</p>
+        </div>
+        <div class="value-card">
+          <div class="value-icon">🤝</div>
+          <h3>Eerlijkheid & transparantie</h3>
+          <p>Geen verborgen kosten, geen onduidelijke privacyregels, geen dark patterns. We communiceren open over wat we bouwen, hoe we data gebruiken en wat we van plan zijn.</p>
+        </div>
+        <div class="value-card">
+          <div class="value-icon">🌍</div>
+          <h3>Toegankelijkheid voor iedereen</h3>
+          <p>AI-tools mogen niet alleen voor grote bedrijven zijn. Taskly is betaalbaar voor studenten, freelancers en kleine bedrijven. Gratis waar het kan, eerlijk geprijsd waar het moet.</p>
+        </div>
+        <div class="value-card">
+          <div class="value-icon">🔒</div>
+          <h3>Privacy als fundament</h3>
+          <p>Jouw data is van jou. We bouwen Taskly zo dat privacy geen bijzaak is maar het fundament waarop alles staat. GDPR-compliant, end-to-end versleuteld, nooit doorverkocht.</p>
+        </div>
+        <div class="value-card">
+          <div class="value-icon">🚀</div>
+          <h3>Continu verbeteren</h3>
+          <p>We lanceren nooit iets en laten het dan voor wat het is. Taskly wordt elke week beter op basis van feedback van gebruikers. Jouw input vormt direct de richting van ons product.</p>
+        </div>
+        <div class="value-card">
+          <div class="value-icon">💡</div>
+          <h3>Innovatie zonder grens</h3>
+          <p>We durven te dromen en te bouwen wat anderen als onmogelijk beschouwen. AI ontwikkelt zich razendsnel en wij bewegen mee — altijd een stap vooruit, nooit tevreden met gisteren.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Roadmap -->
+  <div class="roadmap-section">
+    <div class="roadmap-inner">
+      <div class="section-label">Roadmap</div>
+      <h2 class="section-title">Waar we naartoe gaan</h2>
+      <p class="section-body">We zijn nog maar net begonnen. Dit is onze ambitieuze planning voor de komende jaren — transparant gedeeld met onze community.</p>
+      <div class="roadmap-list">
+        <div class="rm-item">
+          <div class="rm-dot"></div>
+          <div class="rm-period">Maand 1–2</div>
+          <div class="rm-content">
+            <h4>MVP lancering</h4>
+            <p>De eerste versie van Taskly gaat live met AI-tekstassistent, slim taakbeheer, basisintegraties en de mobiele app voor iOS en Android. We verzamelen actief feedback van vroege gebruikers.</p>
+          </div>
+        </div>
+        <div class="rm-item">
+          <div class="rm-dot"></div>
+          <div class="rm-period">Maand 3</div>
+          <div class="rm-content">
+            <h4>Beta & 500 gebruikers</h4>
+            <p>Openbare beta lancering via Product Hunt en eerste marketingcampagnes. Doel: 500 actieve gebruikers. Feedback wordt wekelijks verwerkt in nieuwe versies.</p>
+          </div>
+        </div>
+        <div class="rm-item">
+          <div class="rm-dot"></div>
+          <div class="rm-period">Maand 4–5</div>
+          <div class="rm-content">
+            <h4>Premium & Spraakassistent</h4>
+            <p>Het Premium-abonnement gaat live. De spraakassistent en vergaderingsfunctie worden toegevoegd. Eerste inkomsten en uitbreiding van het integratiepakket.</p>
+          </div>
+        </div>
+        <div class="rm-item">
+          <div class="rm-dot"></div>
+          <div class="rm-period">Maand 6–9</div>
+          <div class="rm-content">
+            <h4>10.000 gebruikers & Business plan</h4>
+            <p>Business-abonnement live met teamfuncties en uitgebreide integraties. Social media AI gelanceerd. Partnerships met eerste B2B-klanten.</p>
+          </div>
+        </div>
+        <div class="rm-item">
+          <div class="rm-dot"></div>
+          <div class="rm-period">Jaar 2</div>
+          <div class="rm-content">
+            <h4>100.000 gebruikers & Europa</h4>
+            <p>Uitrol naar Duitsland, België, Engeland en Scandinavië. AI-video gelanceerd. Eerste investeringsronde om groei te versnellen. Enterprise-plan voor grote bedrijven.</p>
+          </div>
+        </div>
+        <div class="rm-item">
+          <div class="rm-dot"></div>
+          <div class="rm-period">Jaar 3+</div>
+          <div class="rm-content">
+            <h4>5 miljoen gebruikers wereldwijd</h4>
+            <p>Globale uitrol in alle grote markten. Eigen AI-model getraind op miljoenen gebruikspatronen. Mogelijke beursgang of strategische samenwerking met een groter techbedrijf.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ==================== CONTACT PAGE ==================== -->
+<div class="page" id="page-contact">
+
+  <div class="contact-intro">
+    <div class="section-label" style="background:rgba(255,255,255,0.15);color:white;">Neem contact op</div>
+    <h1>We horen graag<br>van je.</h1>
+    <p>Heb je een vraag, een suggestie of wil je meer weten over onze Business-plannen? Ons team staat klaar om je te helpen. We reageren gemiddeld binnen 4 uur op werkdagen.</p>
+  </div>
+
+  <div class="contact-section">
+    <div class="contact-info">
+      <h2>Hoe kunnen we je helpen?</h2>
+      <p>Of je nu een vraag hebt over je abonnement, hulp nodig hebt bij het instellen van integraties, of meer wil weten over onze mogelijkheden voor jouw bedrijf — we staan voor je klaar.</p>
+      <p>Voor zakelijke vragen en partnerships raden we aan het formulier in te vullen met zo veel mogelijk context, zodat we je direct een gericht antwoord kunnen geven.</p>
+      <div class="contact-items">
+        <div class="contact-item">
+          <div class="contact-item-icon">📧</div>
+          <div class="contact-item-text">
+            <h4>E-mail</h4>
+            <p>hallo@taskly.nl<br>Reactietijd: binnen 4 uur op werkdagen</p>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-item-icon">💬</div>
+          <div class="contact-item-text">
+            <h4>Live chat</h4>
+            <p>Beschikbaar in de app voor Premium-gebruikers<br>Werkdagen 09:00–18:00</p>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-item-icon">📍</div>
+          <div class="contact-item-text">
+            <h4>Kantoor</h4>
+            <p>Taskly B.V.<br>Amsterdam, Nederland</p>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-item-icon">📚</div>
+          <div class="contact-item-text">
+            <h4>Kennisbank</h4>
+            <p>Vind antwoorden op veelgestelde vragen<br>in ons uitgebreide helpcenter</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="contact-form">
+      <h3>Stuur ons een bericht</h3>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Voornaam</label>
+          <input type="text" placeholder="Jouw voornaam">
+        </div>
+        <div class="form-group">
+          <label>Achternaam</label>
+          <input type="text" placeholder="Jouw achternaam">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>E-mailadres</label>
+        <input type="email" placeholder="jouw@email.nl">
+      </div>
+      <div class="form-group">
+        <label>Onderwerp</label>
+        <select>
+          <option>Algemene vraag</option>
+          <option>Technische ondersteuning</option>
+          <option>Business / Enterprise plan</option>
+          <option>Partnership of samenwerking</option>
+          <option>Facturatie & abonnement</option>
+          <option>Feedback & suggestie</option>
+          <option>Pers & media</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Jouw bericht</label>
+        <textarea placeholder="Omschrijf je vraag zo gedetailleerd mogelijk. Hoe meer context je geeft, hoe beter we je kunnen helpen."></textarea>
+      </div>
+      <button class="btn-primary" style="margin-top:0.5rem;">Bericht versturen →</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="footer-logo">Task<span>ly</span></div>
+      <p>De alles-in-één AI-productiviteitsapp voor studenten, freelancers en bedrijven. Werk slimmer, niet harder. Begin vandaag gratis.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Product</h4>
+      <ul>
+        <li><button onclick="showPage('features')">Functies</button></li>
+        <li><button onclick="showPage('pricing')">Prijzen</button></li>
+        <li><button onclick="showPage('features')">Integraties</button></li>
+        <li><button onclick="showPage('about')">Roadmap</button></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Bedrijf</h4>
+      <ul>
+        <li><button onclick="showPage('about')">Over ons</button></li>
+        <li><button onclick="showPage('contact')">Contact</button></li>
+        <li><button>Vacatures</button></li>
+        <li><button>Blog</button></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Legal</h4>
+      <ul>
+        <li><button>Privacybeleid</button></li>
+        <li><button>Algemene voorwaarden</button></li>
+        <li><button>Cookie-instellingen</button></li>
+        <li><button>GDPR</button></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 Taskly B.V. — Amsterdam, Nederland</span>
+    <span>Gemaakt met ❤️ voor iedereen die slimmer wil werken</span>
+  </div>
+</footer>
+
+<script>
+  function showPage(name) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-tabs button').forEach(b => b.classList.remove('active'));
+    document.getElementById('page-' + name).classList.add('active');
+    const tab = document.getElementById('tab-' + name);
+    if (tab) tab.classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+</script>
+
+</body>
+</html>
