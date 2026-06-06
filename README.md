@@ -1,6 +1,6 @@
+Hier is alles als één doorlopende platte tekst:
 
-
-Taskly Build your own AI
+Taskly — Build your own AI
 
 Een verzameling van goed geschreven, stap-voor-stap guides om je favoriete AI-technologieën zelf te bouwen — van chatbots tot neurale netwerken, van recommenders tot autonome agents.
 
