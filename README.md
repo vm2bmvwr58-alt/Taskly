@@ -1,62 +1,197 @@
-⚡
-Taskly
-Build your own AI
-Een verzameling van goed geschreven, stap-voor-stap guides om je favoriete AI-technologieën zelf te bouwen — van chatbots tot neurale netwerken, van recommenders tot autonome agents.
-"What I cannot create, I do not understand." — Richard Feynman
-12+
-CATEGORIEËN
-80+
-TUTORIALS
-100%
-AI-FOCUSED
-INHOUD
-AI Chatbot Large Language Model Neuraal Netwerk Recommender Systeem Computer Vision NLP & Tekstanalyse AI Agent Image Generation RAG & Vector Search Voice AI Sentiment Analyse AI Automation
-POPULAIR
-Build your own AI Chatbot
+<div align="center">
 
-	•	Python Build a Chatbot with Python and ChatterBot JavaScript AI Chatbot met Node.js en Dialogflow Python Chatbot bouwen met OpenAI API & Streamlit TypeScript Full-stack AI Chatbot met Next.js en Vercel AI SDK NEW Python Conversational AI bouwen met LangChain JavaScript Build a ChatGPT Clone from Scratch [video]
-GEAVANCEERD
-Build your own Large Language Model
+# 🚀 Taskly
 
-	•	Python LLM training in pure C / CUDA — Andrej Karpathy Python nanoGPT: de eenvoudigste GPT implementatie Python Let's build GPT: from scratch, in code [video] — Karpathy Python LLMs from Scratch — volledig boek + code NEW Any Hugging Face NLP Course — Transformers begrijpen
-FUNDAMENTEN
-Build your own Neuraal Netwerk
+### De alles-in-één AI-productiviteitsapp
 
-	•	Python Neural Networks — 3Blue1Brown [video series] Python micrograd: een tiny autograd engine in Python Python Deep Learning Specialization — Andrew Ng JavaScript ml5.js: Neural Networks in de browser Python CS231n: Convolutional Neural Networks — Stanford Python TensorFlow Tutorials — van beginners tot expert
-PRAKTISCH
-Build your own Recommender Systeem
+**Taskly beheert automatisch jouw taken, e-mails, vergaderingen, documenten en social media — zodat jij je kunt focussen op wat écht belangrijk is.**
 
-	•	Python Recommendation Engine met Collaborative Filtering Python Movie Recommender bouwen met Python Python Surprise: Python library voor recommender systems Python Kaggle: Intro to Machine Learning — hands-on
-COMPUTER VISION
-Build your own Computer Vision Systeem
+[![Website](https://img.shields.io/badge/Website-tasklyapp.com-blue?style=for-the-badge)](https://tasklyapp.com)
+[![License](https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge)](LICENSE)
+[![Version](https://img.shields.io/badge/Version-1.0.0-orange?style=for-the-badge)](#)
+[![Build](https://img.shields.io/badge/Build-Passing-brightgreen?style=for-the-badge)](#)
 
-	•	Python YOLOv8: Object Detection from Scratch met Ultralytics Python Build a Face Recognition System with Python [video] Python OpenCV: Computer Vision in Python — officiële cursus Python Image Classification met TensorFlow & Keras JavaScript Teachable Machine: Train een vision model in de browser NEW
-TAAL & TEKST
-Build your own NLP Pipeline
+[![Stars](https://img.shields.io/github/stars/yourusername/taskly?style=social)](https://github.com/yourusername/taskly/stargazers)
+[![Forks](https://img.shields.io/github/forks/yourusername/taskly?style=social)](https://github.com/yourusername/taskly/network/members)
+[![Issues](https://img.shields.io/github/issues/yourusername/taskly)](https://github.com/yourusername/taskly/issues)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
-	•	Python spaCy 101: NLP pipeline bouwen met spaCy Python Natural Language Processing with Python — NLTK Book (gratis) Python Transformers door Hugging Face — NLP met BERT & GPT Python Sentiment Analysis in Python — stap voor stap Python Gensim: Topic Modeling en Word2Vec in Python
-TRENDING
-Build your own AI Agent
+</div>
 
-	•	Python LangChain Agents: autonome AI-agents bouwen NEW Python AutoGen: Multi-agent AI systemen van Microsoft Python CrewAI: teams van AI-agents die samenwerken NEW TypeScript Vercel AI SDK — Agents met tools en geheugen Python Claude API: Agents bouwen met tool use
-TRENDING
-Build your own Image Generation Model
+-----
 
-	•	Python The Annotated Diffusion Model — Hugging Face blog Python Stable Diffusion from Scratch in Python [video] Python Stable Diffusion — officiële repository + uitleg Python Denoising Diffusion met Keras — stap-voor-stap
-PRAKTISCH
-Build your own RAG & Vector Search
+## 📑 Inhoudsopgave
 
-	•	Python RAG systeem bouwen met LangChain + OpenAI NEW Python LlamaIndex: Data framework voor LLM-applicaties Python Vector Databases uitgelegd — Pinecone Learning Center Python Sentence Transformers: semantisch zoeken in Python TypeScript OpenAI Embeddings + Postgres als vector database
-VOICE & AUDIO
-Build your own Voice AI
+- [Over Taskly](#-over-taskly)
+- [Features](#-features)
+- [Demo](#-demo)
+- [Installatie](#-installatie)
+- [Gebruik](#-gebruik)
+- [Tech Stack](#-tech-stack)
+- [Roadmap](#-roadmap)
+- [Bijdragen](#-bijdragen)
+- [FAQ](#-faq)
+- [Community](#-community)
+- [Licentie](#-licentie)
+- [Contact](#-contact)
 
-	•	Python Whisper: Open-source spraakherkenning van OpenAI Python SpeechBrain: complete toolkit voor spraak-AI Python Coqui TTS: tekst-naar-spraak model trainen JavaScript Web Speech API: Voice AI direct in de browser
-ANALYSE
-Build your own Sentiment Analyse Tool
+-----
 
-	•	Python Sentiment Analysis in Python — complete guide Python Sentiment Analysis met Transformers — Hugging Face Python Twitter Sentiment Analysis voor beginners — Kaggle Python TextBlob: eenvoudige NLP en sentimentanalyse in Python
-TRENDING
-Build your own AI Automation
+## 📌 Over Taskly
 
-	•	Python AI Automation uitgelegd + hoe je het zelf bouwt TypeScript n8n: open-source AI workflow automation NEW Python Prefect: AI-workflows orkestreren in Python Any Make (Integromat): no-code AI automation bouwen TypeScript Inngest: Event-driven AI workflows voor developers
+Taskly is jouw persoonlijke AI-assistent die al je productiviteitstools samenbrengt op één plek. Geen eindeloos wisselen meer tussen Gmail, Outlook, Slack, Notion, Trello en Instagram — Taskly verbindt alles en automatiseert het saaie werk.
+
+> 💡 *“Werk slimmer, niet harder.”*
+
+-----
+
+## ✨ Features
+
+|Feature                   |Beschrijving                                                   |Status|
+|--------------------------|---------------------------------------------------------------|------|
+|📋 **Taakbeheer**          |Automatische to-do lijsten op basis van je agenda en mails     |✅ Live|
+|📧 **E-mail Assistent**    |AI sorteert, samenvat en beantwoordt je e-mails                |✅ Live|
+|📅 **Slimme Agenda**       |Plant vergaderingen automatisch in op basis van beschikbaarheid|✅ Live|
+|📄 **Documentbeheer**      |Doorzoekbare AI-samenvattingen van al je bestanden             |🚧 Beta|
+|📱 **Social Media Manager**|Plant en analyseert posts op meerdere platformen               |🚧 Beta|
+|🔔 **Slimme Notificaties** |Alleen meldingen die écht belangrijk zijn                      |✅ Live|
+|🌍 **Multi-language**      |Ondersteuning voor NL, EN, DE, FR                              |✅ Live|
+
+-----
+
+## 🎬 Demo
+
+🔗 [Live demo bekijken](https://tasklyapp.com/demo)
+📺 [Video walkthrough op YouTube](https://youtube.com/@tasklyapp)
+🖼️ [Screenshots & UI Kit](https://tasklyapp.com/screenshots)
+
+-----
+
+## ⚙️ Installatie
+
+```bash
+# Clone de repository
+git clone https://github.com/yourusername/taskly.git
+
+# Ga naar de projectmap
+cd taskly
+
+# Installeer dependencies
+npm install
+
+# Start de development server
+npm run dev
+```
+
+📦 [Volledige installatiehandleiding](https://docs.tasklyapp.com/installation)
+🐳 [Docker setup](https://docs.tasklyapp.com/docker)
+☁️ [Deploy op Vercel](https://vercel.com/new/clone?repository-url=https://github.com/yourusername/taskly)
+
+-----
+
+## 🧭 Gebruik
+
+1. Maak een account aan via [tasklyapp.com/signup](https://tasklyapp.com/signup)
+1. Koppel je accounts (Gmail, Outlook, Google Calendar, Instagram, LinkedIn)
+1. Laat Taskly’s AI je workflow analyseren
+1. Ontvang dagelijkse AI-samenvattingen en automatische taakplanning
+
+📖 [Volledige documentatie](https://docs.tasklyapp.com)
+🧩 [API Referentie](https://docs.tasklyapp.com/api)
+🔑 [API Keys aanvragen](https://tasklyapp.com/developers)
+
+-----
+
+## 🛠️ Tech Stack
+
+- **Frontend:** [React](https://react.dev) + [TailwindCSS](https://tailwindcss.com)
+- **Backend:** [Node.js](https://nodejs.org) + [Express](https://expressjs.com)
+- **AI:** [Claude API](https://www.anthropic.com) / [OpenAI API](https://openai.com)
+- **Database:** [PostgreSQL](https://www.postgresql.org) via [Supabase](https://supabase.com)
+- **Hosting:** [Vercel](https://vercel.com)
+- **Auth:** [Clerk](https://clerk.com)
+
+-----
+
+## 🗺️ Roadmap
+
+- [x] AI-taakbeheer
+- [x] E-mail integratie
+- [x] Agenda-synchronisatie
+- [ ] Mobiele app (iOS/Android)
+- [ ] Chrome-extensie
+- [ ] WhatsApp integratie
+- [ ] Teamsamenwerking & shared workspaces
+
+📌 [Volledige roadmap op GitHub Projects](https://github.com/yourusername/taskly/projects/1)
+💡 [Feature requests indienen](https://github.com/yourusername/taskly/issues/new?template=feature_request.md)
+
+-----
+
+## 🤝 Bijdragen
+
+Bijdragen zijn van harte welkom!
+
+1. Fork de repo
+1. Maak een nieuwe branch (`git checkout -b feature/nieuwe-feature`)
+1. Commit je wijzigingen (`git commit -m 'Voeg nieuwe feature toe'`)
+1. Push naar de branch (`git push origin feature/nieuwe-feature`)
+1. Open een Pull Request
+
+📜 [Bijdragerichtlijnen](CONTRIBUTING.md)
+🧑‍💻 [Code of Conduct](CODE_OF_CONDUCT.md)
+🏆 [Contributors](https://github.com/yourusername/taskly/graphs/contributors)
+
+-----
+
+## ❓ FAQ
+
+**Is Taskly gratis?**
+Er is een gratis tier met basisfunctionaliteit. Bekijk de [prijzen](https://tasklyapp.com/pricing).
+
+**Welke integraties worden ondersteund?**
+Gmail, Outlook, Google Calendar, Notion, Slack, Instagram, LinkedIn en meer. [Volledige lijst](https://docs.tasklyapp.com/integrations)
+
+**Is mijn data veilig?**
+Ja, lees ons [privacybeleid](https://tasklyapp.com/privacy) en [security overzicht](https://tasklyapp.com/security)
+
+➡️ [Meer vragen? Bezoek ons Helpcenter](https://help.tasklyapp.com)
+
+-----
+
+## 💬 Community
+
+[![Discord](https://img.shields.io/badge/Discord-Join%20Chat-7289DA?style=for-the-badge&logo=discord)](https://discord.gg/taskly)
+[![Twitter/X](https://img.shields.io/badge/X-Volgen-000000?style=for-the-badge&logo=x)](https://x.com/tasklyapp)
+[![Instagram](https://img.shields.io/badge/Instagram-Volgen-E4405F?style=for-the-badge&logo=instagram)](https://instagram.com/tasklyapp)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Volgen-0A66C2?style=for-the-badge&logo=linkedin)](https://linkedin.com/company/tasklyapp)
+[![Reddit](https://img.shields.io/badge/Reddit-r/taskly-FF4500?style=for-the-badge&logo=reddit)](https://reddit.com/r/taskly)
+
+-----
+
+## 📄 Licentie
+
+Dit project is gelicenseerd onder de MIT-licentie — zie het <LICENSE> bestand voor details.
+
+-----
+
+## 📬 Contact
+
+- 🌐 Website: [tasklyapp.com](https://tasklyapp.com)
+- ✉️ E-mail: [support@tasklyapp.com](mailto:support@tasklyapp.com)
+- 🐦 X (Twitter): [@tasklyapp](https://x.com/tasklyapp)
+- 💼 LinkedIn: [Taskly](https://linkedin.com/company/tasklyapp)
+- 📍 Status pagina: [status.tasklyapp.com](https://status.tasklyapp.com)
+
+-----
+
+<div align="center">
+
+Gemaakt met ❤️ door het Taskly-team
+
+[⬆ Terug naar boven](#-taskly)
+
+</div>
+
+
 
